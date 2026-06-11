@@ -6,7 +6,7 @@ terraform.tfvars
 *.tfstate
 *.tfstate.backup
 .terraform/
-
+terraform.tfvars.example
 # Приватные SSH-ключи (На всякий случай)
 *.pem
 id_rsa
