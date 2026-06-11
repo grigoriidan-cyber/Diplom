@@ -1,0 +1,19 @@
+---
+- name: Каталог Zabbix
+  ansible.builtin.file:
+    path: /opt/zabbix
+    state: directory
+    mode: "0755"
+
+- name: docker-compose для Zabbix (postgres + server + web)
+  ansible.builtin.template:
+    src: docker-compose.yml.j2
+    dest: /opt/zabbix/docker-compose.yml
+    mode: "0640"
+
+- name: Запустить Zabbix
+  ansible.builtin.command: docker compose up -d
+  args:
+    chdir: /opt/zabbix
+  register: zbx_up
+  changed_when: "'Started' in zbx_up.stderr or 'Created' in zbx_up.stderr"

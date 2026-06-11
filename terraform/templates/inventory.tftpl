@@ -1,0 +1,24 @@
+#  Генерит Terraform
+#  ВМ адресуются по FQDN .ru-central1.internal, без IP.
+
+[bastion]
+localhost ansible_connection=local
+
+[web]
+${web_hosts}
+
+[zabbix]
+${zabbix_host}
+
+[elastic]
+${elastic_host}
+
+[kibana]
+${kibana_host}
+
+[monitored:children]
+bastion
+web
+zabbix
+elastic
+kibana

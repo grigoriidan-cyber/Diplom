@@ -1,0 +1,27 @@
+server {
+    listen 80 default_server;
+    server_name _;
+
+    root /var/www/diplom;
+    index index.html;
+
+    # Показываем имя сервера прямо на странице
+    sub_filter_once on;
+    sub_filter 'SERVER_NAME' '$hostname';
+
+    # Заголовок для curl (запасной вариант)
+    add_header X-Served-By "$hostname" always;
+
+    location / {
+        try_files $uri $uri/ =404;
+    }
+
+    # Метрики для Zabbix (только изнутри сети)
+    # /basic_status - путь по умолчанию шаблона "Nginx by Zabbix agent"
+    location /basic_status {
+        stub_status;
+        allow 127.0.0.1;
+        allow 10.0.0.0/8;
+        deny all;
+    }
+}

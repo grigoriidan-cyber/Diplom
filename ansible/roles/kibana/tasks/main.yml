@@ -1,0 +1,19 @@
+---
+- name: Каталог Kibana
+  ansible.builtin.file:
+    path: /opt/kibana
+    state: directory
+    mode: "0755"
+
+- name: docker-compose для Kibana
+  ansible.builtin.template:
+    src: docker-compose.yml.j2
+    dest: /opt/kibana/docker-compose.yml
+    mode: "0644"
+
+- name: Запустить Kibana
+  ansible.builtin.command: docker compose up -d
+  args:
+    chdir: /opt/kibana
+  register: kibana_up
+  changed_when: "'Started' in kibana_up.stderr or 'Created' in kibana_up.stderr"

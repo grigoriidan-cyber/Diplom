@@ -1,0 +1,6 @@
+#cloud-config
+# Бастион сразу получает ansible и git, чтобы с него управлять остальными ВМ.
+package_update: true
+packages:
+  - ansible
+  - git

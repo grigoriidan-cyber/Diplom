@@ -1,0 +1,44 @@
+---
+- name: Установить nginx
+  ansible.builtin.apt:
+    name: nginx
+    state: present
+    update_cache: true
+
+- name: Каталог сайта
+  ansible.builtin.file:
+    path: /var/www/diplom
+    state: directory
+    mode: "0755"
+
+- name: Скопировать статический сайт идентичный на оба сервера)
+  ansible.builtin.copy:
+    src: site/
+    dest: /var/www/diplom/
+    mode: "0644"
+
+- name: Конфиг nginx (сайт + stub_status Для монторинга)
+  ansible.builtin.template:
+    src: site.conf.j2
+    dest: /etc/nginx/sites-available/diplom.conf
+    mode: "0644"
+  notify: reload nginx
+
+- name: Включить сайт
+  ansible.builtin.file:
+    src: /etc/nginx/sites-available/diplom.conf
+    dest: /etc/nginx/sites-enabled/diplom.conf
+    state: link
+  notify: reload nginx
+
+- name: Отключить дефолтный сайт
+  ansible.builtin.file:
+    path: /etc/nginx/sites-enabled/default
+    state: absent
+  notify: reload nginx
+
+- name: nginx запущен и в автозапуске
+  ansible.builtin.service:
+    name: nginx
+    state: started
+    enabled: true

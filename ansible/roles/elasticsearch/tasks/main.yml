@@ -1,0 +1,26 @@
+---
+- name: Увеличить vm.max_map_count (требование Elasticsearch)
+  ansible.posix.sysctl:
+    name: vm.max_map_count
+    value: "262144"
+    state: present
+    reload: true
+
+- name: Каталог Elasticsearch
+  ansible.builtin.file:
+    path: /opt/elastic
+    state: directory
+    mode: "0755"
+
+- name: docker-compose для Elasticsearch
+  ansible.builtin.template:
+    src: docker-compose.yml.j2
+    dest: /opt/elastic/docker-compose.yml
+    mode: "0644"
+
+- name: Запустить Elasticsearch
+  ansible.builtin.command: docker compose up -d
+  args:
+    chdir: /opt/elastic
+  register: es_up
+  changed_when: "'Started' in es_up.stderr or 'Created' in es_up.stderr"

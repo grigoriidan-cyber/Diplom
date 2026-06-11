@@ -1,0 +1,19 @@
+# Ключ сервис аккаунта Yandex Cloud
+key.json
+
+# Terraform
+terraform.tfvars
+*.tfstate
+*.tfstate.backup
+.terraform/
+
+# Приватные SSH-ключи (На всякий случай)
+*.pem
+id_rsa
+id_ed25519
+
+# ansible-vault
+ansible/group_vars/all/vault.yml
+
+# Логи
+*.log

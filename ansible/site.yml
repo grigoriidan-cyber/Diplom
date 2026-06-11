@@ -1,0 +1,51 @@
+---
+# Главный плейбук. Запускать на бастионе:
+#   ansible-playbook site.yml
+
+- name: Базовая подготовка всех хостов
+  hosts: monitored
+  become: true
+  roles:
+    - common
+
+- name: Установка Docker (где нужны контейнеры)
+  hosts: web:elastic:kibana:zabbix
+  become: true
+  roles:
+    - docker
+
+- name: Веб-серверы (nginx + статический сайт)
+  hosts: web
+  become: true
+  roles:
+    - nginx
+
+- name: Elasticsearch (Docker)
+  hosts: elastic
+  become: true
+  roles:
+    - elasticsearch
+
+- name: Kibana (Docker)
+  hosts: kibana
+  become: true
+  roles:
+    - kibana
+
+- name: Filebeat на веб-серверах (логи nginx -> Elasticsearch)
+  hosts: web
+  become: true
+  roles:
+    - filebeat
+
+- name: Zabbix server (Docker)
+  hosts: zabbix
+  become: true
+  roles:
+    - zabbix_server
+
+- name: Zabbix agent на всех хостах
+  hosts: monitored
+  become: true
+  roles:
+    - zabbix_agent
